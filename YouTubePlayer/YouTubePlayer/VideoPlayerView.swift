@@ -320,8 +320,12 @@ public class YouTubePlayerView: UIView, WKNavigationDelegate {
     public func webView(webView: WKWebView, decidePolicyForNavigationAction navigationAction: WKNavigationAction, decisionHandler: (WKNavigationActionPolicy) -> Void) {
         let url = navigationAction.request.URL
 
-        if url!.scheme == "ytplayer" {
-          handleJSEvent(url!)
+        if let url = navigationAction.request.URL {
+            if url.scheme == "ytplayer" {
+                handleJSEvent(url)
+                decisionHandler(.Cancel)
+                return
+            }
         }
 
         decisionHandler(.Allow)
