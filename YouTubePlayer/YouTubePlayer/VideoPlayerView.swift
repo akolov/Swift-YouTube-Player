@@ -26,6 +26,7 @@ public enum YouTubePlayerEvents: String {
 }
 
 public enum YouTubePlaybackQuality: String {
+    case Default = "default"
     case Small = "small"
     case Medium = "medium"
     case Large = "large"
@@ -80,7 +81,7 @@ public class YouTubePlayerView: UIView, WKNavigationDelegate {
     private(set) public var playerState = YouTubePlayerState.Unstarted
 
     /** The current playback quality of the video player */
-    private(set) public var playbackQuality = YouTubePlaybackQuality.Small
+    private(set) public var playbackQuality = YouTubePlaybackQuality.Default
 
     /** Used to configure the player */
     public var playerVars = YouTubePlayerParameters()
