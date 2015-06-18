@@ -7,14 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		50E5B9C91A4CAA050099BF69 /* YTPlayer.html in Resources */ = {isa = PBXBuildFile; fileRef = 50E5B9C81A4CAA050099BF69 /* YTPlayer.html */; };
+		50E5B9C91A4CAA050099BF69 /* Player.html in Resources */ = {isa = PBXBuildFile; fileRef = 50E5B9C81A4CAA050099BF69 /* Player.html */; };
 		50E5B9CB1A4CAA150099BF69 /* VideoPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50E5B9CA1A4CAA150099BF69 /* VideoPlayerView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		502AE85F1A475FD500306AD1 /* YouTubePlayer.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = YouTubePlayer.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		502AE8631A475FD500306AD1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; name = Info.plist; path = YouTubePlayer/Info.plist; sourceTree = "<group>"; };
-		50E5B9C81A4CAA050099BF69 /* YTPlayer.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = YTPlayer.html; path = YouTubePlayer/YTPlayer.html; sourceTree = SOURCE_ROOT; };
+		50E5B9C81A4CAA050099BF69 /* Player.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = Player.html; path = YouTubePlayer/Player.html; sourceTree = SOURCE_ROOT; };
 		50E5B9CA1A4CAA150099BF69 /* VideoPlayerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = VideoPlayerView.swift; path = YouTubePlayer/VideoPlayerView.swift; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
@@ -49,7 +49,7 @@
 			isa = PBXGroup;
 			children = (
 				50E5B9CA1A4CAA150099BF69 /* VideoPlayerView.swift */,
-				50E5B9C81A4CAA050099BF69 /* YTPlayer.html */,
+				50E5B9C81A4CAA050099BF69 /* Player.html */,
 				502AE8621A475FD500306AD1 /* Supporting Files */,
 			);
 			name = YouTubePlayer;
@@ -131,7 +131,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				50E5B9C91A4CAA050099BF69 /* YTPlayer.html in Resources */,
+				50E5B9C91A4CAA050099BF69 /* Player.html in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
