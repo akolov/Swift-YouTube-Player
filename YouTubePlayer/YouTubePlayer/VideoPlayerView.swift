@@ -53,6 +53,8 @@ public class YouTubePlayerView: UIView, WKNavigationDelegate {
   private(set) public var playerState = YouTubePlayerState.Unstarted
   private(set) public var playbackQuality = YouTubePlaybackQuality.Default
 
+  public var playerVars = YouTubePlayerParameters()
+
   public var delegate: YouTubePlayerDelegate?
 
   public override init(frame: CGRect) {
@@ -104,11 +106,11 @@ public class YouTubePlayerView: UIView, WKNavigationDelegate {
 
   // MARK: Player parameters and defaults
 
-  private func playerParameters(playerVars: YouTubePlayerParameters? = nil) -> YouTubePlayerParameters {
+  private var playerParameters: YouTubePlayerParameters {
     return [
       "height": "100%",
       "width": "100%",
-      "playerVars": playerVars ?? YouTubePlayerParameters(),
+      "playerVars": playerVars,
       "events": [
         "onReady": "onReady",
         "onStateChange": "onStateChange",
@@ -137,7 +139,10 @@ public class YouTubePlayerView: UIView, WKNavigationDelegate {
   public var videoID: String? {
     didSet {
       if let videoID = videoID {
-        var params = playerParameters()
+        playerVars["listType"] = nil
+        playerVars["list"] = nil
+
+        var params = playerParameters
         params["videoId"] = videoID
         loadPlayer(params)
       }
@@ -147,12 +152,9 @@ public class YouTubePlayerView: UIView, WKNavigationDelegate {
   public var playlistID: String? {
     didSet {
       if let videoID = videoID {
-        var playerVars = YouTubePlayerParameters()
         playerVars["listType"] = "playlist"
         playerVars["list"] = playlistID
-
-        var params = playerParameters(playerVars: playerVars)
-        loadPlayer(params)
+        loadPlayer(playerParameters)
       }
     }
   }
