@@ -9,14 +9,14 @@
 import UIKit
 import YouTubePlayer
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, YouTubePlayerDelegate {
 
   @IBOutlet var playerView: YouTubePlayerView!
   @IBOutlet var playButton: UIButton!
 
   override func viewDidLoad() {
     super.viewDidLoad()
-    // Do any additional setup after loading the view, typically from a nib.
+    playerView.delegate = self
   }
 
   @IBAction func play(sender: UIButton) {
@@ -24,7 +24,8 @@ class ViewController: UIViewController {
       if playerView.playerState != YouTubePlayerState.Playing {
         playerView.play()
         playButton.setTitle("Pause", forState: .Normal)
-      } else {
+      }
+      else {
         playerView.pause()
         playButton.setTitle("Play", forState: .Normal)
       }
@@ -64,6 +65,19 @@ class ViewController: UIViewController {
     // Dispose of any resources that can be recreated.
   }
 
+  // MARK: YouTubePlayerDelegate
+
+  func youTubePlayerReady(videoPlayer: YouTubePlayerView) {
+    println("Player ready")
+  }
+
+  func youTubePlayerStateChanged(videoPlayer: YouTubePlayerView, playerState: YouTubePlayerState) {
+    println("Player state changed: \(playerState.rawValue)")
+  }
+
+  func youTubePlayerQualityChanged(videoPlayer: YouTubePlayerView, playbackQuality: YouTubePlaybackQuality) {
+    println("Player quality changed: \(playbackQuality.rawValue)")
+  }
 
 }
 
