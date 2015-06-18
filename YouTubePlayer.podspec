@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "YouTubePlayer"
-  s.version      = "1.0"
+  s.version      = "1.0.0"
   s.summary      = "A swift port of the YouTube embedded player for iOS"
 
   s.homepage     = "https://github.com/akolov/YouTubePlayer"
