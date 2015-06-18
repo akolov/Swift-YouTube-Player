@@ -4,6 +4,7 @@
 //
 //  Created by Giles Van Gruisen on 12/21/14.
 //  Copyright (c) 2014 Giles Van Gruisen. All rights reserved.
+//  Copyright (c) 2015 Alexander Kolov. All rights reserved.
 //
 
 import WebKit
