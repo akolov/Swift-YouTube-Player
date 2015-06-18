@@ -5,14 +5,14 @@ Embed and control YouTube videos in your iOS applications! Using Cocoapods.  Her
 ## Cocoapods Podfile
 Add the following line to you Podfile.  When you are done make sure to run "pod install"
 ```cocoapods
-pod 'Swift-YouTube-Player', '~> 0.2'
+pod 'YouTubePlayer', '~> 1.0'
 ```
 That is it!  Simply import the module and use.
 
 ## Swift file
 ```Swift
 // Import Swift module
-import Swift_YouTube_Player
+import YouTubePlayer
 ```
 
 Build and lay out the view however you wish, whether in IB w/ an outlet or programmatically.
@@ -27,21 +27,21 @@ var videoPlayer = YouTubePlayerView(frame: playerFrame)
 Give the player a video to load, whether from ID or URL.
 ```Swift
 // Load video from YouTube ID
-videoPlayer.loadVideoID("nfWlot6h_JM")
+videoPlayer.videoID = "nfWlot6h_JM"
 ```
 ```Swift
 // Load video from YouTube URL
 let myVideoURL = NSURL(string: "https://www.youtube.com/watch?v=wQg3bXrVLtg")
-videoPlayer.loadVideoURL(myVideoURL!)
+videoPlayer.videoURL = myVideoURL!
 ```
 
 ## Controlling YouTubePlayerView
 
 Each `YouTubePlayerView` has methods for controlling the player (play, pause, seek, change video, etc.) They are:
 
-* `func loadVideoURL(videoURL: NSURL)`
-* `func loadVideoID(videoID: String)`
-* `func loadPlaylistID(playlistID: String)`
+* `var videoURL: NSURL?`
+* `var videoID: String?`
+* `var playlistID: String?`
 * `func play()`
 * `func pause()`
 * `func stop()`
@@ -50,7 +50,7 @@ Each `YouTubePlayerView` has methods for controlling the player (play, pause, se
 * `func previousVideo()`
 * `func nextVideo()`
 
-Please note that calls to all but the first two methods will result in a JavaScript runtime error if they are called before the player is ready. The player will not be ready until shortly after a call to either `loadVideoURL(videoURL: NSURL)` or `loadVideoID(videoID: String)`. You can check the readiness of the player at any time by checking its `ready: Bool` property. These functions run asynchronously, so it is not guaranteed that a call to a play function will be safe if it immediately follows a call to a load function. I plan to update the library soon to add completion handlers to be called when the player is ready.
+Please note that calls to all but the first two methods will result in a JavaScript runtime error if they are called before the player is ready. The player will not be ready until shortly after setting either `videoURL` or `videoID`. You can check the readiness of the player at any time by checking its `ready: Bool` property. These functions run asynchronously, so it is not guaranteed that a call to a play function will be safe if it immediately follows a call to a load function. I plan to update the library soon to add completion handlers to be called when the player is ready.
 
 In the meantime, you can also the `YouTubePlayerDelegate` method `playerReady(videoPlayer: YouTubePlayerView)` to ensure code is executed immediately when the player becomes ready.
 
