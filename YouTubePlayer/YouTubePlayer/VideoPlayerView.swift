@@ -10,20 +10,20 @@
 import WebKit
 import UIKit
 
-public enum YouTubePlayerState: String {
-  case Unstarted = "-1"
-  case Ended = "0"
-  case Playing = "1"
-  case Paused = "2"
-  case Buffering = "3"
-  case Queued = "4"
+public enum YouTubePlayerState: Int {
+  case Unstarted = -1
+  case Ended = 0
+  case Playing = 1
+  case Paused = 2
+  case Buffering = 3
+  case Queued = 4
 }
 
 public enum YouTubePlayerEvents: String {
-  case YouTubeIframeAPIReady = "onYouTubeIframeAPIReady"
-  case Ready = "onReady"
-  case StateChange = "onStateChange"
-  case PlaybackQualityChange = "onPlaybackQualityChange"
+  case YouTubeIframeAPIReady = "apiReady"
+  case Ready = "ready"
+  case StateChange = "stateChange"
+  case PlaybackQualityChange = "playbackQualityChange"
 }
 
 public enum YouTubePlaybackQuality: String {
@@ -37,21 +37,31 @@ public enum YouTubePlaybackQuality: String {
 }
 
 public protocol YouTubePlayerDelegate {
-  func playerReady(videoPlayer: YouTubePlayerView)
-  func playerStateChanged(videoPlayer: YouTubePlayerView, playerState: YouTubePlayerState)
-  func playerQualityChanged(videoPlayer: YouTubePlayerView, playbackQuality: YouTubePlaybackQuality)
+  func youTubePlayerReady(videoPlayer: YouTubePlayerView)
+  func youTubePlayerStateChanged(videoPlayer: YouTubePlayerView, playerState: YouTubePlayerState)
+  func youTubePlayerQualityChanged(videoPlayer: YouTubePlayerView, playbackQuality: YouTubePlaybackQuality)
 }
 
 /** Embed and control YouTube videos */
-public class YouTubePlayerView: UIView, WKNavigationDelegate {
+public class YouTubePlayerView: UIView, WKScriptMessageHandler {
 
   public typealias YouTubePlayerParameters = [String: AnyObject]
 
   private var webView: WKWebView!
 
   private(set) public var ready = false
-  private(set) public var playerState = YouTubePlayerState.Unstarted
-  private(set) public var playbackQuality = YouTubePlaybackQuality.Default
+
+  private(set) public var playerState = YouTubePlayerState.Unstarted {
+    didSet {
+      delegate?.youTubePlayerStateChanged(self, playerState: playerState)
+    }
+  }
+
+  private(set) public var playbackQuality = YouTubePlaybackQuality.Default {
+    didSet {
+      delegate?.youTubePlayerQualityChanged(self, playbackQuality: playbackQuality)
+    }
+  }
 
   public var playerVars = YouTubePlayerParameters()
 
@@ -74,10 +84,10 @@ public class YouTubePlayerView: UIView, WKNavigationDelegate {
     configuration.allowsInlineMediaPlayback = true
     configuration.mediaPlaybackAllowsAirPlay = true
     configuration.mediaPlaybackRequiresUserAction = false
+    configuration.userContentController.addScriptMessageHandler(self, name: "EventHandler")
 
     webView = WKWebView(frame: CGRectZero, configuration: configuration)
     webView.setTranslatesAutoresizingMaskIntoConstraints(false)
-    webView.navigationDelegate = self
 
     addSubview(webView)
     addConstraints([
@@ -210,46 +220,30 @@ public class YouTubePlayerView: UIView, WKNavigationDelegate {
     }
   }
 
-  private func handleEvent(eventURL: NSURL) {
-    // Grab the last component of the queryString as string
-    let components = NSURLComponents(URL: eventURL, resolvingAgainstBaseURL: true)
-    let state: String? = components?.queryItems?.filter { $0.name == "data" }.first?.value
+  // MARK: WKScriptMessageHandler
 
-    if let host = eventURL.host, state = state, event = YouTubePlayerEvents(rawValue: host) {
-      switch event {
-      case .YouTubeIframeAPIReady:
-        ready = true
+  public func userContentController(userContentController: WKUserContentController, didReceiveScriptMessage message: WKScriptMessage) {
+    if let dict = message.body as? [String: AnyObject] {
+      if let eventName = dict["event"] as? String, event = YouTubePlayerEvents(rawValue: eventName) {
+        switch event {
+        case .YouTubeIframeAPIReady:
+          ready = true
 
-      case .Ready:
-        delegate?.playerReady(self)
+        case .Ready:
+          delegate?.youTubePlayerReady(self)
 
-      case .StateChange:
-        if let newState = YouTubePlayerState(rawValue: state) {
-          playerState = newState
-          delegate?.playerStateChanged(self, playerState: newState)
-        }
+        case .StateChange:
+          if let stateName = dict["data"] as? Int, state = YouTubePlayerState(rawValue: stateName) {
+            playerState = state
+          }
 
-      case .PlaybackQualityChange:
-        if let newQuality = YouTubePlaybackQuality(rawValue: state) {
-          playbackQuality = newQuality
-          delegate?.playerQualityChanged(self, playbackQuality: newQuality)
+        case .PlaybackQualityChange:
+          if let qualityName = dict["data"] as? String, quality = YouTubePlaybackQuality(rawValue: qualityName) {
+            playbackQuality = quality
+          }
         }
       }
     }
-  }
-
-  // MARK: WKNavigationDelegate
-
-  public func webView(webView: WKWebView, decidePolicyForNavigationAction navigationAction: WKNavigationAction, decisionHandler: (WKNavigationActionPolicy) -> Void) {
-    if let url = navigationAction.request.URL {
-      if url.scheme == "ytplayer" {
-        handleEvent(url)
-        decisionHandler(.Cancel)
-        return
-      }
-    }
-
-    decisionHandler(.Allow)
   }
 
 }
