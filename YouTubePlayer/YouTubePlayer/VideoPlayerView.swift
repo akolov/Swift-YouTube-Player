@@ -148,24 +148,19 @@ public class YouTubePlayerView: UIView, WKScriptMessageHandler {
 
   public var videoID: String? {
     didSet {
-      if let videoID = videoID {
-        playerVars["listType"] = nil
-        playerVars["list"] = nil
-
-        var params = playerParameters
-        params["videoId"] = videoID
-        loadPlayer(params)
-      }
+      playerVars["listType"] = nil
+      playerVars["list"] = nil
+      var params = playerParameters
+      params["videoId"] = videoID
+      loadPlayer(params)
     }
   }
 
   public var playlistID: String? {
     didSet {
-      if let videoID = videoID {
-        playerVars["listType"] = "playlist"
-        playerVars["list"] = playlistID
-        loadPlayer(playerParameters)
-      }
+      playerVars["listType"] = "playlist"
+      playerVars["list"] = playlistID
+      loadPlayer(playerParameters)
     }
   }
 
