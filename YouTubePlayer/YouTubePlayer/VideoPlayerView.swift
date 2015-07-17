@@ -36,7 +36,7 @@ public enum YouTubePlaybackQuality: String {
   case HighResolution = "highres"
 }
 
-public protocol YouTubePlayerDelegate {
+public protocol YouTubePlayerDelegate: class {
   func youTubePlayerReady(videoPlayer: YouTubePlayerView)
   func youTubePlayerStateChanged(videoPlayer: YouTubePlayerView, playerState: YouTubePlayerState)
   func youTubePlayerQualityChanged(videoPlayer: YouTubePlayerView, playbackQuality: YouTubePlaybackQuality)
@@ -65,7 +65,7 @@ public class YouTubePlayerView: UIView, WKScriptMessageHandler {
 
   public var playerVars = YouTubePlayerParameters()
 
-  public var delegate: YouTubePlayerDelegate?
+  public weak var delegate: YouTubePlayerDelegate?
 
   public override init(frame: CGRect) {
     super.init(frame: frame)
