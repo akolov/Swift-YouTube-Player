@@ -80,6 +80,8 @@ public class YouTubePlayerView: UIView, WKScriptMessageHandler {
   // MARK: Private functions
 
   private func configure() {
+    webView.scrollView.scrollEnabled = false
+
     let configuration = WKWebViewConfiguration()
     configuration.allowsInlineMediaPlayback = true
     configuration.mediaPlaybackAllowsAirPlay = true
