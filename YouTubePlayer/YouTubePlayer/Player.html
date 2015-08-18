@@ -16,7 +16,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, user-scalable=no">
     <style>
       * { margin: 0; padding: 0; }
       html, body { width: 100%; height: 100%; }
@@ -57,6 +57,12 @@
           console.log('The native context does not exist yet');
         }
       }
+
+      window.onresize = function(event) {
+        var viewport = document.getElementsByName('viewport')[0];
+        viewport.setAttribute('content', 'width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no');
+        viewport.setAttribute('content', 'width=device-width, user-scalable=no');
+      };
     </script>
   </body>
 </html>
