@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		50E5B9CB1A4CAA150099BF69 /* YouTubePlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50E5B9CA1A4CAA150099BF69 /* YouTubePlayerView.swift */; };
 		FA11B2711B86189C00519B24 /* Player.html in Resources */ = {isa = PBXBuildFile; fileRef = FA11B26F1B86189C00519B24 /* Player.html */; };
+		FA19B9A01B87583100949F52 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA19B99F1B87583100949F52 /* WebKit.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -16,6 +17,7 @@
 		502AE8631A475FD500306AD1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; name = Info.plist; path = YouTubePlayer/Info.plist; sourceTree = "<group>"; };
 		50E5B9CA1A4CAA150099BF69 /* YouTubePlayerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = YouTubePlayerView.swift; path = YouTubePlayer/YouTubePlayerView.swift; sourceTree = SOURCE_ROOT; };
 		FA11B26F1B86189C00519B24 /* Player.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = Player.html; path = YouTubePlayer/Player.html; sourceTree = SOURCE_ROOT; };
+		FA19B99F1B87583100949F52 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -23,6 +25,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FA19B9A01B87583100949F52 /* WebKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -32,6 +35,7 @@
 		502AE8551A475FD500306AD1 = {
 			isa = PBXGroup;
 			children = (
+				FA19B9A11B87583A00949F52 /* Frameworks */,
 				502AE8611A475FD500306AD1 /* YouTubePlayer */,
 				502AE8601A475FD500306AD1 /* Products */,
 			);
@@ -62,6 +66,14 @@
 				502AE8631A475FD500306AD1 /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		FA19B9A11B87583A00949F52 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				FA19B99F1B87583100949F52 /* WebKit.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

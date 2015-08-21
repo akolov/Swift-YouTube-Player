@@ -79,5 +79,9 @@ class ViewController: UIViewController, YouTubePlayerDelegate {
     println("Player quality changed: \(playbackQuality.rawValue)")
   }
 
+  func youTubePlayerPlayTimeUpdated(videoPlayer: YouTubePlayerView, playTime: NSTimeInterval) {
+    println("Player time changed: \(playTime)")
+  }
+
 }
 
