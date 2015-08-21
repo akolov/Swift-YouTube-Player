@@ -99,6 +99,7 @@ public class YouTubePlayerView: UIView, WKScriptMessageHandler {
   // MARK: Web view
 
   private var webView: WKWebView!
+  private var html: String?
 
   func configure() {
     let configuration = WKWebViewConfiguration()
@@ -119,14 +120,21 @@ public class YouTubePlayerView: UIView, WKScriptMessageHandler {
   func loadPlayer(parameters: YouTubePlayerParameters) {
     if let path = NSBundle(forClass: self.dynamicType).pathForResource("Player", ofType: "html") {
       var error: NSError?
-      let html = String(contentsOfFile: path, encoding: NSUTF8StringEncoding, error: &error)
-
-      if let json = serializedJSON(parameters), html = html?.stringByReplacingOccurrencesOfString("@PARAMETERS@", withString: json, options: nil, range: nil) {
-        webView.loadHTMLString(html, baseURL: originURL)
+      if let json = serializedJSON(parameters) {
+        html = String(contentsOfFile: path, encoding: NSUTF8StringEncoding, error: &error)?.stringByReplacingOccurrencesOfString("@PARAMETERS@", withString: json, options: nil, range: nil)
       }
-      else if let error = error {
+
+      if let error = error {
         println("Could not open html file: \(error)")
       }
+
+      reloadPlayer()
+    }
+  }
+
+  public func reloadPlayer() {
+    if let html = html {
+      webView.loadHTMLString(html, baseURL: originURL)
     }
   }
 
