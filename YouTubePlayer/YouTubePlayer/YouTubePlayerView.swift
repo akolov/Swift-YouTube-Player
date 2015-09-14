@@ -91,7 +91,7 @@ public class YouTubePlayerView: UIView, WKScriptMessageHandler {
     configure()
   }
 
-  public required init(coder aDecoder: NSCoder) {
+  public required init?(coder aDecoder: NSCoder) {
     super.init(coder: aDecoder)
     configure()
   }
@@ -112,27 +112,39 @@ public class YouTubePlayerView: UIView, WKScriptMessageHandler {
     webView.scrollView.bounces = false
     webView.scrollView.scrollEnabled = false
     webView.scrollView.panGestureRecognizer.enabled = false
-    webView.autoresizingMask = .FlexibleWidth | .FlexibleHeight
+    webView.autoresizingMask = [.FlexibleWidth, .FlexibleHeight]
 
     addSubview(webView)
   }
 
-  func loadPlayer(parameters: YouTubePlayerParameters) {
-    if let path = NSBundle(forClass: self.dynamicType).pathForResource("Player", ofType: "html") {
-      var error: NSError?
-      if let json = serializedJSON(parameters) {
-        html = String(contentsOfFile: path, encoding: NSUTF8StringEncoding, error: &error)?.stringByReplacingOccurrencesOfString("@PARAMETERS@", withString: json, options: nil, range: nil)
-      }
+  func loadPlayer(parameters: YouTubePlayerParameters) throws {
+    let path = NSBundle(forClass: self.dynamicType).pathForResource("Player", ofType: "html")
+    let json = try serializedJSON(parameters)
+    html = try String(contentsOfFile: path!, encoding: NSUTF8StringEncoding).stringByReplacingOccurrencesOfString("@PARAMETERS@", withString: json, options: [], range: nil)
+    reloadVideo()
+  }
 
-      if let error = error {
-        println("Could not open html file: \(error)")
-      }
+  public func loadVideo(videoID: String) throws {
+    playerVars["listType"] = nil
+    playerVars["list"] = nil
+    var params = playerParameters
+    params["videoId"] = videoID
+    try loadPlayer(params)
+  }
 
-      reloadPlayer()
+  public func loadPlaylist(playlistID: String) throws {
+    playerVars["listType"] = "playlist"
+    playerVars["list"] = playlistID
+    try loadPlayer(playerParameters)
+  }
+
+  public func loadURL(URL: NSURL) throws {
+    if let components = NSURLComponents(URL: URL, resolvingAgainstBaseURL: true), videoID = components.queryItems?.filter({ $0.name == "v" }).first?.value {
+      try loadVideo(videoID)
     }
   }
 
-  public func reloadPlayer() {
+  public func reloadVideo() {
     if let html = html {
       webView.loadHTMLString(html, baseURL: originURL)
     }
@@ -143,7 +155,7 @@ public class YouTubePlayerView: UIView, WKScriptMessageHandler {
     webView.evaluateJavaScript(fullCommand) { object, error in
       callback?(object, error)
       if let error = error {
-        println("Failed to evaluate JavaScript: \(error.localizedDescription)")
+        print("Failed to evaluate JavaScript: \(error.localizedDescription)")
       }
     }
   }
@@ -156,24 +168,6 @@ public class YouTubePlayerView: UIView, WKScriptMessageHandler {
         handlePlayerEvent(event, data: dict["data"])
       }
     }
-  }
-
-  // MARK: Player setup
-
-  func loadPlayerHTML(parameters: YouTubePlayerParameters) -> String? {
-    if let path = NSBundle(forClass: YouTubePlayerView.self).pathForResource("Player", ofType: "html") {
-      var error: NSError?
-      let html = String(contentsOfFile: path, encoding: NSUTF8StringEncoding, error: &error)
-
-      if let json = serializedJSON(parameters), html = html?.stringByReplacingOccurrencesOfString("@PARAMETERS@", withString: json, options: nil, range: nil) {
-        return html
-      }
-      else if let error = error {
-        println("Could not open html file: \(error)")
-      }
-    }
-
-    return nil
   }
 
   // MARK: Player parameters and defaults
@@ -192,46 +186,9 @@ public class YouTubePlayerView: UIView, WKScriptMessageHandler {
     ]
   }
 
-  func serializedJSON(object: AnyObject) -> String? {
-    var error: NSError?
-    let data = NSJSONSerialization.dataWithJSONObject(object, options: NSJSONWritingOptions.allZeros, error: &error)
-
-    if let data = data {
-      return NSString(data: data, encoding: NSUTF8StringEncoding) as? String
-    }
-    else if let error = error {
-      println("JSON serialization error: \(error.localizedDescription)")
-    }
-
-    return nil
-  }
-
-  // MARK: Video loading
-
-  public var videoID: String? {
-    didSet {
-      playerVars["listType"] = nil
-      playerVars["list"] = nil
-      var params = playerParameters
-      params["videoId"] = videoID
-      loadPlayer(params)
-    }
-  }
-
-  public var playlistID: String? {
-    didSet {
-      playerVars["listType"] = "playlist"
-      playerVars["list"] = playlistID
-      loadPlayer(playerParameters)
-    }
-  }
-
-  public var videoURL: NSURL? {
-    didSet {
-      if let url = videoURL, components = NSURLComponents(URL: url, resolvingAgainstBaseURL: true) {
-        videoID = components.queryItems?.filter { $0.name == "v" }.first?.value
-      }
-    }
+  func serializedJSON(object: AnyObject) throws -> String {
+    let data = try NSJSONSerialization.dataWithJSONObject(object, options: NSJSONWritingOptions())
+    return NSString(data: data, encoding: NSUTF8StringEncoding) as! String
   }
 
   // MARK: Player controls
@@ -286,7 +243,12 @@ public class YouTubePlayerView: UIView, WKScriptMessageHandler {
       var rates: [NSNumber]?
       var jsonError: NSError?
       if let data = object?.dataUsingEncoding(NSUTF8StringEncoding) {
-        rates = NSJSONSerialization.JSONObjectWithData(data, options: .allZeros, error: &jsonError) as? [NSNumber]
+        do {
+          rates = try NSJSONSerialization.JSONObjectWithData(data, options: []) as? [NSNumber]
+        }
+        catch let e as NSError {
+          jsonError = e
+        }
       }
 
       callback(rates?.map { $0.floatValue } ?? [], error ?? jsonError)
