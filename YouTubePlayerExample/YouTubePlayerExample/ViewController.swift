@@ -40,13 +40,13 @@ class ViewController: UIViewController, YouTubePlayerDelegate {
     playerView.nextVideo()
   }
 
-  @IBAction func loadVideo(sender: UIButton) {
+  @IBAction func loadVideo(sender: UIButton) throws {
     playerView.playerVars = ["playsinline": "1"]
-    playerView.videoID = "wQg3bXrVLtg"
+    try playerView.loadVideo("wQg3bXrVLtg")
   }
 
-  @IBAction func loadPlaylist(sender: UIButton) {
-    playerView.playlistID = "RDe-ORhEE9VVg"
+  @IBAction func loadPlaylist(sender: UIButton) throws {
+    try playerView.loadPlaylist("RDe-ORhEE9VVg")
   }
 
   func showAlert(message: String) {
@@ -68,19 +68,19 @@ class ViewController: UIViewController, YouTubePlayerDelegate {
   // MARK: YouTubePlayerDelegate
 
   func youTubePlayerReady(videoPlayer: YouTubePlayerView) {
-    println("Player ready")
+    print("Player ready")
   }
 
   func youTubePlayerStateChanged(videoPlayer: YouTubePlayerView, playerState: YouTubePlayerState) {
-    println("Player state changed: \(playerState.rawValue)")
+    print("Player state changed: \(playerState.rawValue)")
   }
 
   func youTubePlayerQualityChanged(videoPlayer: YouTubePlayerView, playbackQuality: YouTubePlaybackQuality) {
-    println("Player quality changed: \(playbackQuality.rawValue)")
+    print("Player quality changed: \(playbackQuality.rawValue)")
   }
 
   func youTubePlayerPlayTimeUpdated(videoPlayer: YouTubePlayerView, playTime: NSTimeInterval) {
-    println("Player time changed: \(playTime)")
+    print("Player time changed: \(playTime)")
   }
 
 }
