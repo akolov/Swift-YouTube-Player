@@ -128,6 +128,8 @@
 		50BB8ADA1A7D914C00216B49 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastSwiftMigration = 0700;
+				LastSwiftUpdateCheck = 0700;
 				LastUpgradeCheck = 0610;
 				ORGANIZATIONNAME = "Giles Van Gruisen";
 				TargetAttributes = {
