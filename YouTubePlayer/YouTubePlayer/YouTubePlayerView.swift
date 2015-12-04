@@ -52,9 +52,10 @@ public protocol YouTubePlayerDelegate: class {
   func youTubePlayerStateChanged(videoPlayer: YouTubePlayerView, playerState: YouTubePlayerState)
   func youTubePlayerQualityChanged(videoPlayer: YouTubePlayerView, playbackQuality: YouTubePlaybackQuality)
   func youTubePlayerPlayTimeUpdated(videoPlayer: YouTubePlayerView, playTime: NSTimeInterval)
+  func youTubePlayerWantsToOpenURL(videoPlayer: YouTubePlayerView, URL: NSURL)
 }
 
-public class YouTubePlayerView: UIView, WKScriptMessageHandler {
+public class YouTubePlayerView: UIView {
 
   public typealias YouTubePlayerParameters = [String: AnyObject]
 
@@ -113,6 +114,8 @@ public class YouTubePlayerView: UIView, WKScriptMessageHandler {
     webView.scrollView.scrollEnabled = false
     webView.scrollView.panGestureRecognizer.enabled = false
     webView.autoresizingMask = [.FlexibleWidth, .FlexibleHeight]
+    webView.navigationDelegate = self
+    webView.UIDelegate = self
 
     addSubview(webView)
   }
@@ -156,16 +159,6 @@ public class YouTubePlayerView: UIView, WKScriptMessageHandler {
       callback?(object, error)
       if let error = error {
         print("Failed to evaluate JavaScript: \(error.localizedDescription)")
-      }
-    }
-  }
-
-  // MARK: WKScriptMessageHandler
-
-  public func userContentController(userContentController: WKUserContentController, didReceiveScriptMessage message: WKScriptMessage) {
-    if let dict = message.body as? [String: AnyObject] {
-      if let eventName = dict["event"] as? String, event = YouTubePlayerEvents(rawValue: eventName) {
-        handlePlayerEvent(event, data: dict["data"])
       }
     }
   }
@@ -300,6 +293,45 @@ public class YouTubePlayerView: UIView, WKScriptMessageHandler {
         playTime = time
       }
     }
+  }
+
+}
+
+extension YouTubePlayerView: WKScriptMessageHandler {
+
+  public func userContentController(userContentController: WKUserContentController, didReceiveScriptMessage message: WKScriptMessage) {
+    if let dict = message.body as? [String: AnyObject] {
+      if let eventName = dict["event"] as? String, event = YouTubePlayerEvents(rawValue: eventName) {
+        handlePlayerEvent(event, data: dict["data"])
+      }
+    }
+  }
+
+}
+
+extension YouTubePlayerView: WKNavigationDelegate {
+
+  public func webView(webView: WKWebView, decidePolicyForNavigationAction navigationAction: WKNavigationAction, decisionHandler: (WKNavigationActionPolicy) -> Void) {
+    if let URL = navigationAction.request.URL where navigationAction.navigationType == .LinkActivated {
+      delegate?.youTubePlayerWantsToOpenURL(self, URL: URL)
+      decisionHandler(.Cancel)
+    }
+    else {
+      decisionHandler(.Allow)
+    }
+
+  }
+
+}
+
+extension YouTubePlayerView: WKUIDelegate {
+
+  public func webView(webView: WKWebView, createWebViewWithConfiguration configuration: WKWebViewConfiguration, forNavigationAction navigationAction: WKNavigationAction, windowFeatures: WKWindowFeatures) -> WKWebView? {
+    if let URL = navigationAction.request.URL where navigationAction.targetFrame == nil {
+      reloadVideo()
+      delegate?.youTubePlayerWantsToOpenURL(self, URL: URL)
+    }
+    return nil
   }
 
 }
