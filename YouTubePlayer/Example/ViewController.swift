@@ -40,13 +40,13 @@ class ViewController: UIViewController, YouTubePlayerDelegate {
     playerView.nextVideo()
   }
 
-  @IBAction func loadVideo(sender: UIButton) throws {
-    playerView.playerVars = ["playsinline": "1"]
-    try playerView.loadVideo("wQg3bXrVLtg")
+  @IBAction func loadVideo(sender: UIButton) {
+    playerView.playerVars = ["controls": 2, "showinfo": 0, "modestbranding": 1, "rel": 0]
+    try! playerView.loadVideo("wQg3bXrVLtg")
   }
 
-  @IBAction func loadPlaylist(sender: UIButton) throws {
-    try playerView.loadPlaylist("RDe-ORhEE9VVg")
+  @IBAction func loadPlaylist(sender: UIButton) {
+    try! playerView.loadPlaylist("RDe-ORhEE9VVg")
   }
 
   func showAlert(message: String) {
@@ -81,6 +81,10 @@ class ViewController: UIViewController, YouTubePlayerDelegate {
 
   func youTubePlayerPlayTimeUpdated(videoPlayer: YouTubePlayerView, playTime: NSTimeInterval) {
     print("Player time changed: \(playTime)")
+  }
+
+  func youTubePlayerWantsToOpenURL(videoPlayer: YouTubePlayerView, URL: NSURL) {
+    UIApplication.sharedApplication().openURL(URL)
   }
 
 }
