@@ -19,43 +19,43 @@ class ViewController: UIViewController, YouTubePlayerDelegate {
     playerView.delegate = self
   }
 
-  @IBAction func play(sender: UIButton) {
+  @IBAction func play(_ sender: UIButton) {
     if playerView.ready {
-      if playerView.playerState != YouTubePlayerState.Playing {
+      if playerView.playerState != YouTubePlayerState.playing {
         playerView.play()
-        playButton.setTitle("Pause", forState: .Normal)
+        playButton.setTitle("Pause", for: UIControlState())
       }
       else {
         playerView.pause()
-        playButton.setTitle("Play", forState: .Normal)
+        playButton.setTitle("Play", for: UIControlState())
       }
     }
   }
 
-  @IBAction func prev(sender: UIButton) {
+  @IBAction func prev(_ sender: UIButton) {
     playerView.previousVideo()
   }
 
-  @IBAction func next(sender: UIButton) {
+  @IBAction func next(_ sender: UIButton) {
     playerView.nextVideo()
   }
 
-  @IBAction func loadVideo(sender: UIButton) {
+  @IBAction func loadVideo(_ sender: UIButton) {
     playerView.playerVars = ["controls": 2, "showinfo": 0, "modestbranding": 1, "rel": 0]
     try! playerView.loadVideo("wQg3bXrVLtg")
   }
 
-  @IBAction func loadPlaylist(sender: UIButton) {
+  @IBAction func loadPlaylist(_ sender: UIButton) {
     try! playerView.loadPlaylist("RDe-ORhEE9VVg")
   }
 
-  func showAlert(message: String) {
-    self.presentViewController(alertWithMessage(message), animated: true, completion: nil)
+  func showAlert(_ message: String) {
+    self.present(alertWithMessage(message), animated: true, completion: nil)
   }
 
-  func alertWithMessage(message: String) -> UIAlertController {
-    let alertController =  UIAlertController(title: "", message: message, preferredStyle: .Alert)
-    alertController.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
+  func alertWithMessage(_ message: String) -> UIAlertController {
+    let alertController =  UIAlertController(title: "", message: message, preferredStyle: .alert)
+    alertController.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
 
     return alertController
   }
@@ -67,24 +67,24 @@ class ViewController: UIViewController, YouTubePlayerDelegate {
 
   // MARK: YouTubePlayerDelegate
 
-  func youTubePlayerReady(videoPlayer: YouTubePlayerView) {
+  func youTubePlayerReady(_ videoPlayer: YouTubePlayerView) {
     print("Player ready")
   }
 
-  func youTubePlayerStateChanged(videoPlayer: YouTubePlayerView, playerState: YouTubePlayerState) {
+  func youTubePlayerStateChanged(_ videoPlayer: YouTubePlayerView, playerState: YouTubePlayerState) {
     print("Player state changed: \(playerState.rawValue)")
   }
 
-  func youTubePlayerQualityChanged(videoPlayer: YouTubePlayerView, playbackQuality: YouTubePlaybackQuality) {
+  func youTubePlayerQualityChanged(_ videoPlayer: YouTubePlayerView, playbackQuality: YouTubePlaybackQuality) {
     print("Player quality changed: \(playbackQuality.rawValue)")
   }
 
-  func youTubePlayerPlayTimeUpdated(videoPlayer: YouTubePlayerView, playTime: NSTimeInterval) {
+  func youTubePlayerPlayTimeUpdated(_ videoPlayer: YouTubePlayerView, playTime: TimeInterval) {
     print("Player time changed: \(playTime)")
   }
 
-  func youTubePlayerWantsToOpenURL(videoPlayer: YouTubePlayerView, URL: NSURL) {
-    UIApplication.sharedApplication().openURL(URL)
+  func youTubePlayerWantsToOpenURL(_ videoPlayer: YouTubePlayerView, URL: Foundation.URL) {
+    UIApplication.shared.openURL(URL)
   }
 
 }
