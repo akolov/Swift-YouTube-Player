@@ -142,7 +142,22 @@ open class YouTubePlayerView: UIView {
   }
 
   open func loadURL(_ URL: Foundation.URL) throws {
-    if let components = URLComponents(url: URL, resolvingAgainstBaseURL: true), let videoID = components.queryItems?.filter({ $0.name == "v" }).first?.value {
+    guard let components = URLComponents(url: URL, resolvingAgainstBaseURL: false) else {
+      return
+    }
+
+    var videoID: String?
+
+    if components.host == "youtu.be" {
+      var value = components.path
+      value.remove(at: value.startIndex)
+      videoID = value
+    }
+    else if let value = components.queryItems?.filter({ $0.name == "v" }).first?.value {
+      videoID = value
+    }
+
+    if let videoID = videoID {
       try loadVideo(videoID)
     }
   }
