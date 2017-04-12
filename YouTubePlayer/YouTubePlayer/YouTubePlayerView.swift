@@ -20,31 +20,30 @@ public enum YouTubePlayerState: Int {
 }
 
 public enum YouTubePlayerEvents: String {
-  case YouTubeIframeAPIReady = "apiReady"
-  case Ready = "ready"
-  case StateChange = "stateChange"
-  case PlaybackQualityChange = "playbackQualityChange"
-  case PlayTime = "playTime"
+  case ready = "ready"
+  case stateChange = "stateChange"
+  case playbackQualityChange = "playbackQualityChange"
+  case playTime = "playTime"
 }
 
 public enum YouTubePlaybackQuality: String {
-  case Auto = "auto"
-  case Default = "default"
-  case Small = "small"
-  case Medium = "medium"
-  case Large = "large"
-  case HD720 = "hd720"
-  case HD1080 = "hd1080"
-  case HighResolution = "highres"
+  case auto = "auto"
+  case defaultQuality = "default"
+  case small = "small"
+  case medium = "medium"
+  case large = "large"
+  case hd720 = "hd720"
+  case hd1080 = "hd1080"
+  case highResolution = "highres"
 }
 
 public enum YouTubePlayerError: String {
-  case InvalidParam = "2"
-  case HTML5 = "5"
-  case VideoNotFound = "100"
-  case NotEmbeddable = "101"
-  case CannotFindVideo = "105"
-  case SameAsNotEmbeddable = "150"
+  case invalidParam = "2"
+  case html5 = "5"
+  case videoNotFound = "100"
+  case notEmbeddable = "101"
+  case cannotFindVideo = "105"
+  case sameAsNotEmbeddable = "150"
 }
 
 public protocol YouTubePlayerDelegate: class {
@@ -237,23 +236,21 @@ open class YouTubePlayerView: UIView {
 
   fileprivate func handlePlayerEvent(_ event: YouTubePlayerEvents, data: AnyObject?) {
     switch event {
-    case .YouTubeIframeAPIReady:
+    case .ready:
       isReady = true
-
-    case .Ready:
       delegate?.youTubePlayerReady(self)
 
-    case .StateChange:
+    case .stateChange:
       if let stateName = data as? Int, let state = YouTubePlayerState(rawValue: stateName) {
         playerState = state
       }
 
-    case .PlaybackQualityChange:
+    case .playbackQualityChange:
       if let qualityName = data as? String, let quality = YouTubePlaybackQuality(rawValue: qualityName) {
         playbackQuality = quality
       }
 
-    case .PlayTime:
+    case .playTime:
       if let time = data as? TimeInterval {
         playTime = time
       }
@@ -283,13 +280,13 @@ open class YouTubePlayerView: UIView {
 
   private(set) public var isReady = false
 
-  private(set) public var playerState = YouTubePlayerState.unstarted {
+  private(set) public var playerState: YouTubePlayerState = .unstarted {
     didSet {
       delegate?.youTubePlayerStateChanged(self, playerState: playerState)
     }
   }
 
-  private(set) public var playbackQuality = YouTubePlaybackQuality.Default {
+  private(set) public var playbackQuality: YouTubePlaybackQuality = .defaultQuality {
     didSet {
       delegate?.youTubePlayerQualityChanged(self, playbackQuality: playbackQuality)
     }

@@ -49,7 +49,6 @@
       function onYouTubeIframeAPIReady() {
         player = new YT.Player('player', @PARAMETERS@);
         player.setSize(window.innerWidth, window.innerHeight);
-        callNativeApp({'event': 'apiReady', 'data': event.data});
 
         // this will transmit playTime frequently while playng
         function getCurrentTime() {
