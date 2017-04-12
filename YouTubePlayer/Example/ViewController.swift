@@ -20,7 +20,7 @@ class ViewController: UIViewController, YouTubePlayerDelegate {
   }
 
   @IBAction func play(_ sender: UIButton) {
-    if playerView.ready {
+    if playerView.isReady {
       if playerView.playerState != YouTubePlayerState.playing {
         playerView.play()
         playButton.setTitle("Pause", for: UIControlState())
@@ -42,11 +42,11 @@ class ViewController: UIViewController, YouTubePlayerDelegate {
 
   @IBAction func loadVideo(_ sender: UIButton) {
     playerView.playerVars = ["controls": 2, "showinfo": 0, "modestbranding": 1, "rel": 0]
-    try! playerView.loadVideo("wQg3bXrVLtg")
+    try! playerView.load(videoID: "L0MK7qz13bU")
   }
 
   @IBAction func loadPlaylist(_ sender: UIButton) {
-    try! playerView.loadPlaylist("RDe-ORhEE9VVg")
+    try! playerView.load(playlistID: "PL4BrNFx1j7E6a6IKg8N0IgnkoamHlCHWa")
   }
 
   func showAlert(_ message: String) {
@@ -83,8 +83,8 @@ class ViewController: UIViewController, YouTubePlayerDelegate {
     print("Player time changed: \(playTime)")
   }
 
-  func youTubePlayerWantsToOpenURL(_ videoPlayer: YouTubePlayerView, URL: Foundation.URL) {
-    UIApplication.shared.openURL(URL)
+  func youTubePlayerWantsToOpenURL(_ videoPlayer: YouTubePlayerView, url: URL) {
+    UIApplication.shared.openURL(url)
   }
 
 }
